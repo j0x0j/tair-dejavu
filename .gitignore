@@ -6,3 +6,5 @@ mp3
 .DS_Store
 *.cnf
 .idea/
+.vscode/
+results/

@@ -1,0 +1,26 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+cycler = "==0.10.0"
+matplotlib = "==2.0.2"
+scipy = ">=0.19.1"
+numpy = ">=1.13.1"
+pyaudio = "==0.2.11"
+pydub = "==0.20.0"
+pymysql = "==0.7.11"
+pyparsing = "==2.2.0"
+python-dateutil = "==2.6.1"
+pytz = "==2017.2"
+wavio = "==0.0.3"
+pylint = "*"
+
+
+[dev-packages]
+
+pylint = "*"

@@ -275,7 +275,7 @@ class SQLDatabase(Database):
         """
         values = []
         for hash, offset in hashes:
-            values.append((hash, sid, offset))
+            values.append((hash, sid, int(offset)))
 
         with self.cursor() as cur:
             for split_values in grouper(values, 1000):
