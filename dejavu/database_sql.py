@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from itertools import zip_longest
+from itertools import izip_longest
 import queue
 
 try:
@@ -321,7 +321,7 @@ class SQLDatabase(Database):
 def grouper(iterable, n, fillvalue=None):
     args = [iter(iterable)] * n
     return (filter(None, values) for values
-            in zip_longest(fillvalue=fillvalue, *args))
+            in izip_longest(fillvalue=fillvalue, *args))
 
 
 def cursor_factory(**factory_options):
