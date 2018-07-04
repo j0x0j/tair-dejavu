@@ -8,7 +8,7 @@ class Database(object):
     FIELD_FILE_SHA1 = 'file_sha1'
     FIELD_SONG_ID = 'song_id'
     FIELD_SONGNAME = 'song_name'
-    FIELD_DURATION = 'duration'
+    FIELD_DURATION = 'song_duration'
     FIELD_OFFSET = 'offset'
     FIELD_HASH = 'hash'
 

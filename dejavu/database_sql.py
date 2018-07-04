@@ -69,7 +69,7 @@ class SQLDatabase(Database):
 
     # fields
     FIELD_FINGERPRINTED = "fingerprinted"
-    FIELD_DURATION = "duration"
+    FIELD_DURATION = "song_duration"
 
     # creates
     CREATE_FINGERPRINTS_TABLE = """

@@ -12,7 +12,7 @@ class Dejavu(object):
 
     SONG_ID = 'song_id'
     SONG_NAME = 'song_name'
-    SONG_DURATION = 'duration'
+    SONG_DURATION = 'song_duration'
     CONFIDENCE = 'confidence'
     MATCH_TIME = 'match_time'
     OFFSET = 'offset'
