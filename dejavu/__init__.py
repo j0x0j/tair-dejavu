@@ -193,12 +193,12 @@ def _fingerprint_worker(filename, limit=None, song_name=None):
 
     for channeln, channel in enumerate(channels):
         # TODO: Remove prints or change them into optional logging.
-        print("Fingerprinting channel %d/%d for %s" % (channeln + 1,
-                                                       channel_amount,
-                                                       filename))
+        # print("Fingerprinting channel %d/%d for %s" % (channeln + 1,
+        #                                                channel_amount,
+        #                                                filename))
         hashes = fingerprint.fingerprint(channel, Fs=Fs)
-        print("Finished channel %d/%d for %s" % (channeln + 1, channel_amount,
-                                                 filename))
+        # print("Finished channel %d/%d for %s" % (channeln + 1, channel_amount,
+        #                                          filename))
         result |= set(hashes)
 
     return song_name, result, file_hash
