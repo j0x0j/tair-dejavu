@@ -17,7 +17,7 @@ DEFAULT_CONFIG_FILE = "dejavu.cnf.SAMPLE"
 
 
 def init(configpath):
-    """ 
+    """
     Load config from a JSON file
     """
     try:
@@ -67,16 +67,19 @@ if __name__ == '__main__':
         if len(args.fingerprint) == 2:
             directory = args.fingerprint[0]
             extension = args.fingerprint[1]
-            print("Fingerprinting all .%s files in the %s directory"
-                  % (extension, directory))
             djv.fingerprint_directory(directory, ["." + extension], 4)
-
+            print(json.dumps({"status":"OK", "message":"Fingerprinting all .%s files in the %s directory" % (extension, directory)}))
         elif len(args.fingerprint) == 1:
             filepath = args.fingerprint[0]
             if os.path.isdir(filepath):
-                print("Please specify an extension if you'd like to fingerprint a directory!")
+                print(json.dumps({"stastus":"error", "message":"Please specify an extension if you'd like to fingerprint a directory!"}))
                 sys.exit(1)
-            djv.fingerprint_file(filepath)
+            try:
+                result = djv.fingerprint_file(filepath)
+                print(json.dumps({"status":"OK","message":result}))
+            except:
+                print(json.dumps({"status":"error"}))
+        sys.stdout.flush()
 
     elif args.recognize:
         # Recognize audio source
@@ -88,6 +91,7 @@ if __name__ == '__main__':
             song = djv.recognize(MicrophoneRecognizer, seconds=opt_arg)
         elif source == 'file':
             song = djv.recognize(FileRecognizer, opt_arg)
-        print(song)
+        print(json.dumps(song))
+        sys.stdout.flush()
 
     sys.exit(0)

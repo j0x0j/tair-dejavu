@@ -28,19 +28,19 @@ DEFAULT_OVERLAP_RATIO = 0.5
 ######################################################################
 # Degree to which a fingerprint can be paired with its neighbors --
 # higher will cause more fingerprints, but potentially better accuracy.
-DEFAULT_FAN_VALUE = 15
+DEFAULT_FAN_VALUE = 25
 
 ######################################################################
 # Minimum amplitude in spectrogram in order to be considered a peak.
 # This can be raised to reduce number of fingerprints, but can negatively
 # affect accuracy.
-DEFAULT_AMP_MIN = 10
+DEFAULT_AMP_MIN = 5
 
 ######################################################################
 # Number of cells around an amplitude peak in the spectrogram in order
 # for Dejavu to consider it a spectral peak. Higher values mean less
 # fingerprints and faster matching, but can potentially affect accuracy.
-PEAK_NEIGHBORHOOD_SIZE = 20
+PEAK_NEIGHBORHOOD_SIZE = 10
 
 ######################################################################
 # Thresholds on how close or far fingerprints can be in time in order
@@ -57,7 +57,7 @@ PEAK_SORT = True
 
 ######################################################################
 # Number of bits to grab from the front of the SHA1 hash in the
-# fingerprint calculation. The more you grab, the more memory storage, 
+# fingerprint calculation. The more you grab, the more memory storage,
 # with potentially lesser collisions of matches.
 FINGERPRINT_REDUCTION = 20
 
@@ -117,7 +117,7 @@ def get_2D_peaks(arr2D, plot=False, amp_min=DEFAULT_AMP_MIN):
     for x in peaks_filtered:
         frequency_idx.append(x[1])
         time_idx.append(x[0])
-    
+
     if plot:
         # scatter of the peaks
         fig, ax = plt.subplots()
@@ -144,7 +144,7 @@ def generate_hashes(peaks, fan_value=DEFAULT_FAN_VALUE):
     for i in range(len(peaks)):
         for j in range(1, fan_value):
             if (i + j) < len(peaks):
-                
+
                 freq1 = peaks[i][IDX_FREQ_I]
                 freq2 = peaks[i + j][IDX_FREQ_I]
                 t1 = peaks[i][IDX_TIME_J]
