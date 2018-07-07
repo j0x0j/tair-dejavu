@@ -135,6 +135,8 @@ class Dejavu(object):
         largest = 0
         largest_count = 0
         song_id = -1
+        largest_matches = {}
+
         for tup in matches:
             sid, diff = tup
             if diff not in diff_counter:
@@ -147,6 +149,7 @@ class Dejavu(object):
                 largest = diff
                 largest_count = diff_counter[diff][sid]
                 song_id = sid
+                largest_matches[sid] = largest_count
 
         # extract idenfication
         song = self.db.get_song_by_id(song_id)
@@ -170,6 +173,18 @@ class Dejavu(object):
             Dejavu.OFFSET_SECS: nseconds,
             Database.FIELD_FILE_SHA1: song.get(Database.FIELD_FILE_SHA1, None),
         }
+
+        # fallback songs workflow
+        accepted_fallbacks = []
+        for key in largest_matches:
+            distance = largest_matches[key] / largest_count
+            # accept matches that have at least 10% of the largest confidence
+            if distance >= 0.1 and distance != 1:
+                # print("Largest Matches %d - %d" % (key, largest_matches[key]))
+                accepted_fallbacks.append(tuple([key, largest_matches[key]]))
+
+        song['fallback_matches'] = accepted_fallbacks
+
         return song
 
     def recognize(self, recognizer, *options, **kwoptions):
