@@ -149,7 +149,10 @@ class Dejavu(object):
                 largest = diff
                 largest_count = diff_counter[diff][sid]
                 song_id = sid
-                largest_matches[sid] = largest_count
+                largest_matches[sid] = {
+                    'count': largest_count,
+                    'diff': diff
+                }
 
         # extract idenfication
         song = self.db.get_song_by_id(song_id)
@@ -177,11 +180,24 @@ class Dejavu(object):
         # fallback songs workflow
         accepted_fallbacks = []
         for key in largest_matches:
-            distance = largest_matches[key] / largest_count
+            distance = largest_matches[key]['count'] / largest_count
             # accept matches that have at least 10% of the largest confidence
             if distance >= 0.1 and distance != 1:
-                # print("Largest Matches %d - %d" % (key, largest_matches[key]))
-                accepted_fallbacks.append(tuple([key, largest_matches[key]]))
+                # print("Largest Matches %d - %d" % (key, largest_matches[key]['count']))
+                nseconds = round(float(largest_matches[key]['diff']) / fingerprint.DEFAULT_FS *
+                                 fingerprint.DEFAULT_WINDOW_SIZE *
+                                 fingerprint.DEFAULT_OVERLAP_RATIO, 5)
+
+                song_fallback = self.db.get_song_by_id(key)
+
+                accepted_fallbacks.append({
+                    Dejavu.SONG_ID: key,
+                    Dejavu.SONG_NAME: song_fallback.get(Dejavu.SONG_NAME, None),
+                    Dejavu.SONG_DURATION: song_fallback.get(Dejavu.SONG_DURATION, None),
+                    Dejavu.CONFIDENCE: largest_matches[key]['count'],
+                    Dejavu.OFFSET_SECS: nseconds,
+                    Database.FIELD_FILE_SHA1: song_fallback.get(Database.FIELD_FILE_SHA1, None),
+                })
 
         song['fallback_matches'] = accepted_fallbacks
 
