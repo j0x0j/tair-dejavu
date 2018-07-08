@@ -182,7 +182,7 @@ class Dejavu(object):
         for key in largest_matches:
             distance = largest_matches[key]['count'] / largest_count
             # accept matches that have at least 10% of the largest confidence
-            if distance >= 0.1 and distance != 1:
+            if distance >= 0.1 and song_id != key:
                 # print("Largest Matches %d - %d" % (key, largest_matches[key]['count']))
                 nseconds = round(float(largest_matches[key]['diff']) / fingerprint.DEFAULT_FS *
                                  fingerprint.DEFAULT_WINDOW_SIZE *
