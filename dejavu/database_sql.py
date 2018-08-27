@@ -70,6 +70,7 @@ class SQLDatabase(Database):
     # fields
     FIELD_FINGERPRINTED = "fingerprinted"
     FIELD_DURATION = "song_duration"
+    FIELD_CREATIVE_ID = "creative_id"
 
     # creates
     CREATE_FINGERPRINTS_TABLE = """
@@ -94,11 +95,12 @@ class SQLDatabase(Database):
             `%s` tinyint default 0,
             `%s` binary(20) not null,
             `%s` float not null,
+            `%s` varchar(250) not null,
         PRIMARY KEY (`%s`),
         UNIQUE KEY `%s` (`%s`)
     ) ENGINE=INNODB;""" % (
-        SONGS_TABLENAME, Database.FIELD_SONG_ID, Database.FIELD_SONGNAME, FIELD_FINGERPRINTED, FIELD_DURATION,
-        Database.FIELD_FILE_SHA1,
+        SONGS_TABLENAME, Database.FIELD_SONG_ID, Database.FIELD_SONGNAME, FIELD_FINGERPRINTED, Database.FIELD_FILE_SHA1,
+        FIELD_DURATION, FIELD_CREATIVE_ID,
         Database.FIELD_SONG_ID, Database.FIELD_SONG_ID, Database.FIELD_SONG_ID,
     )
 
@@ -108,8 +110,8 @@ class SQLDatabase(Database):
             (UNHEX(%%s), %%s, %%s);
     """ % (FINGERPRINTS_TABLENAME, Database.FIELD_HASH, Database.FIELD_SONG_ID, Database.FIELD_OFFSET)
 
-    INSERT_SONG = "INSERT INTO %s (%s, %s, %s) values (%%s, UNHEX(%%s), %%s);" % (
-        SONGS_TABLENAME, Database.FIELD_SONGNAME, Database.FIELD_FILE_SHA1, Database.FIELD_DURATION)
+    INSERT_SONG = "INSERT INTO %s (%s, %s, %s, %s) values (%%s, UNHEX(%%s), %%s, %%s);" % (
+        SONGS_TABLENAME, Database.FIELD_SONGNAME, Database.FIELD_FILE_SHA1, Database.FIELD_DURATION, Database.FIELD_CREATIVE_ID)
 
     # selectss
     SELECT = """
@@ -126,8 +128,8 @@ class SQLDatabase(Database):
     """ % (Database.FIELD_SONG_ID, Database.FIELD_OFFSET, FINGERPRINTS_TABLENAME)
 
     SELECT_SONG = """
-        SELECT %s, %s, HEX(%s) as %s FROM %s WHERE %s = %%s;
-    """ % (Database.FIELD_SONGNAME, Database.FIELD_DURATION, Database.FIELD_FILE_SHA1, Database.FIELD_FILE_SHA1, SONGS_TABLENAME, Database.FIELD_SONG_ID)
+        SELECT %s, %s, HEX(%s) as %s, %s FROM %s WHERE %s = %%s;
+    """ % (Database.FIELD_SONGNAME, Database.FIELD_DURATION, Database.FIELD_FILE_SHA1, Database.FIELD_FILE_SHA1, Database.FIELD_CREATIVE_ID, SONGS_TABLENAME, Database.FIELD_SONG_ID)
 
     SELECT_NUM_FINGERPRINTS = """
         SELECT COUNT(*) as n FROM %s
@@ -253,12 +255,12 @@ class SQLDatabase(Database):
         with self.cursor() as cur:
             cur.execute(self.INSERT_FINGERPRINT, (hash, sid, offset))
 
-    def insert_song(self, songname, file_hash, duration):
+    def insert_song(self, songname, file_hash, duration, creative_id):
         """
         Inserts song in the database and returns the ID of the inserted record.
         """
         with self.cursor() as cur:
-            cur.execute(self.INSERT_SONG, (songname, file_hash, duration))
+            cur.execute(self.INSERT_SONG, (songname, file_hash, duration, creative_id))
             return cur.lastrowid
 
     def query(self, hash):

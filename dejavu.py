@@ -44,6 +44,10 @@ if __name__ == '__main__':
                              'Usages: \n'
                              '--fingerprint /path/to/directory extension\n'
                              '--fingerprint /path/to/directory')
+    parser.add_argument('-C', '--creative', nargs='*',
+                        help='Sets the creative id \n'
+                             'Usages: \n'
+                             '--creative id')
     parser.add_argument('-r', '--recognize', nargs=2,
                         help='Recognize what is '
                              'playing through the microphone\n'
@@ -68,17 +72,27 @@ if __name__ == '__main__':
             directory = args.fingerprint[0]
             extension = args.fingerprint[1]
             djv.fingerprint_directory(directory, ["." + extension], 4)
-            print(json.dumps({"status":"OK", "message":"Fingerprinting all .%s files in the %s directory" % (extension, directory)}))
+            print(json.dumps({
+                "status": "OK",
+                "message": "Fingerprinting all .%s files in the %s directory" % (extension, directory)
+            }))
         elif len(args.fingerprint) == 1:
             filepath = args.fingerprint[0]
             if os.path.isdir(filepath):
-                print(json.dumps({"stastus":"error", "message":"Please specify an extension if you'd like to fingerprint a directory!"}))
+                print(json.dumps({
+                    "status": "error",
+                    "message": "Please specify an extension if you'd like to fingerprint a directory!"
+                }))
                 sys.exit(1)
             try:
-                result = djv.fingerprint_file(filepath)
-                print(json.dumps({"status":"OK","message":result}))
+                creative_id = args.creative[0]
+                result = djv.fingerprint_file(filepath, "", creative_id)
+                print(json.dumps({
+                    "status": "OK",
+                    "message": result
+                }))
             except:
-                print(json.dumps({"status":"error"}))
+                print(json.dumps({"status": "error"}))
         sys.stdout.flush()
 
     elif args.recognize:

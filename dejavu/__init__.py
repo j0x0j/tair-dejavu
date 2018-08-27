@@ -13,6 +13,7 @@ class Dejavu(object):
     SONG_ID = 'song_id'
     SONG_NAME = 'song_name'
     SONG_DURATION = 'song_duration'
+    CREATIVE_ID = 'creative_id'
     CONFIDENCE = 'confidence'
     MATCH_TIME = 'match_time'
     OFFSET = 'offset'
@@ -95,7 +96,7 @@ class Dejavu(object):
         pool.close()
         pool.join()
 
-    def fingerprint_file(self, filepath, song_name=None):
+    def fingerprint_file(self, filepath, song_name=None, creative_id=None):
         songname = decoder.path_to_songname(filepath)
         song_hash = decoder.unique_hash(filepath)
         song_name = song_name or songname
@@ -113,7 +114,7 @@ class Dejavu(object):
                 self.limit,
                 song_name=song_name
             )
-            sid = self.db.insert_song(song_name, file_hash, duration)
+            sid = self.db.insert_song(song_name, file_hash, duration, creative_id)
 
             self.db.insert_hashes(sid, hashes)
             self.db.set_song_fingerprinted(sid)
@@ -160,6 +161,7 @@ class Dejavu(object):
             # TODO: Clarify what `get_song_by_id` should return.
             songname = song.get(Dejavu.SONG_NAME, None)
             duration = song.get(Dejavu.SONG_DURATION, None)
+            creative = song.get(Dejavu.CREATIVE_ID, None)
         else:
             return None
 
@@ -171,6 +173,7 @@ class Dejavu(object):
             Dejavu.SONG_ID: song_id,
             Dejavu.SONG_NAME: songname,
             Dejavu.SONG_DURATION: duration,
+            Dejavu.CREATIVE_ID: creative,
             Dejavu.CONFIDENCE: largest_count,
             Dejavu.OFFSET: int(largest),
             Dejavu.OFFSET_SECS: nseconds,
@@ -194,6 +197,7 @@ class Dejavu(object):
                     Dejavu.SONG_ID: key,
                     Dejavu.SONG_NAME: song_fallback.get(Dejavu.SONG_NAME, None),
                     Dejavu.SONG_DURATION: song_fallback.get(Dejavu.SONG_DURATION, None),
+                    Dejavu.CREATIVE_ID: song_fallback.get(Dejavu.CREATIVE_ID, None),
                     Dejavu.CONFIDENCE: largest_matches[key]['count'],
                     Dejavu.OFFSET_SECS: nseconds,
                     Database.FIELD_FILE_SHA1: song_fallback.get(Database.FIELD_FILE_SHA1, None),
