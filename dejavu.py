@@ -91,8 +91,8 @@ if __name__ == '__main__':
                     "status": "OK",
                     "message": result
                 }))
-            except:
-                print(json.dumps({"status": "error"}))
+            except Exception as e:
+                print(json.dumps({"status": "error", "message": str(e)}))
         sys.stdout.flush()
 
     elif args.recognize:

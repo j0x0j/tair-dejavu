@@ -107,7 +107,7 @@ class Dejavu(object):
 
         # don't refingerprint already fingerprinted files
         if song_hash in self.songhashes_set:
-            print("%s already fingerprinted, continuing..." % song_name)
+            raise Exception("%s already fingerprinted." % song_name)
         else:
             song_name, hashes, file_hash = _fingerprint_worker(
                 filepath,
